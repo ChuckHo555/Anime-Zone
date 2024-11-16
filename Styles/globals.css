@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  margin:0;
+  padding:0;
+  box-sizing:0
+
+}
+
+html{
+  margin:0;
+  padding:0;
+  box-sizing:0;
+  width:100%;
+  height:100%;
+
+}
+
+body {
+  margin:0;
+  padding:0;
+  box-sizing:0;
+  width:100%;
+  min-width:450px;
+  height:100%;
+  min-height:650px
+}
+
+/* Home Page*/
+@layer components {
+  
+  .welcome-container{
+    @apply border-red-500 border-[24px] border-solid /* border settings */
+
+    flex justify-center items-center /* flex settings */
+
+    w-full h-full /* size settings */
+
+    /* additional settings */
+    text-white text-2xl
+    bg-black;
+  }
+  .welcome-wrapper{
+    @apply border-blue-500 border-[12px] border-solid
+    flex flex-col justify-start items-center 
+    p-2 gap-2
+    w-full h-[500px];
+
+    /* Regular CSS */
+    box-shadow: 0px 4px 40px 0px #FF7622;
+
+  }
+  .content-wrapper{
+    @apply border-orange-500
+    flex justify-center items-center
+    gap-5
+    w-full h-fit
+    max-h-[500px]
+  }
+  .auth-button{
+    @apply bg-blue-500 hover:bg-blue-600 rounded-md
+    px-6 py-2 text-white
+
+  }
+  
+}
+
+@layer components {
+  .anime-container {
+    @apply border-red-500 border-[12px] border-solid
+    flex-col justify-center items-start
+    w-full h-screen;
+  }
+
+  .anime-wrapper {
+    @apply border-blue-500 border-[24px] border-solid
+    flex justify-start items-start
+    w-full h-auto max-h-[600px] 
+    overflow-y-auto
+  }
+  .anime-section-wrapper{
+    @apply border-orange-500 border-[12px] border-solid
+    flex-col justify-start items-start
+    w-full h-fit
+  }
+
+  .anime-card {
+    @apply border-purple-500 border-[6px] border-solid
+    flex-col items-center gap-2
+    w-[300px] h-[400px]
+    text-center;
+  }
+
+  .anime-card img {
+    @apply w-full h-[200px]
+  }
+}
+
+/*Authentication Pages*/
+@layer components{
+  .auth-container{
+    @apply border-red-500 border-[24px] border-solid /* border settings */
+
+    flex justify-center items-center /* flex settings */
+
+    w-full h-full /* size settings */
+
+    /* additional settings */
+    text-white text-2xl
+    bg-black;
+  }
+  .auth-wrapper{
+    @apply border-blue-500 border-[12px] border-solid
+    flex flex-col justify-start items-center 
+    p-2 gap-4
+    w-full h-[500px]
+  }
+}
+
+/*Home Pages*/
+@layer components{
+  .home-container{
+    @apply border-red-500 border-[24px] border-solid /* border settings */
+    flex flex-col justify-start items-center
+    w-full h-full
+   text-white text-2xl
+    bg-black;
+  }
+  .home-wrapper{
+    @apply border-blue-500 border-[12px] border-solid
+    flex flex-col justify-start items-start
+    p-2 gap-4
+    w-full h-[500px]
+  }
+  .user-header{
+    @apply border-orange-500 border-[12px] border-solid
+    flex justify-start items-center
+    p-3 
+    w-full h-fit max-h-[200px]
+    bg-red-600
+  }
+}
+
+
+
+
+
+
