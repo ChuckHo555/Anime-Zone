@@ -130,9 +130,10 @@ body {
   }
   .home-wrapper{
     @apply border-blue-500 border-[12px] border-solid
-    flex flex-col justify-start items-start
+    flex justify-start items-start
     p-2 gap-4
-    w-full h-[500px]
+    w-full h-full
+    overflow-y-scroll
   }
   .user-header{
     @apply border-orange-500 border-[12px] border-solid

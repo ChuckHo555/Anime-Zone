@@ -11,6 +11,21 @@
     export interface User{
       userId : String
       profilePicUrl : String
+    };
+
+    export interface AnimeCardProps {
+      anime: {
+        id: number;
+        title: {
+          romaji: string;
+          english?: string;
+        };
+        coverImage: {
+          large: string;
+        };
+        averageScore: number;
+        genres: string[];
+      };
     }
     
    

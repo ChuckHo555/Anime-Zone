@@ -35,10 +35,22 @@ export async function GET() {
     };
 
     const response = await fetch(url, options);
+
+    if (!response.ok) {
+      console.error('AniList API Error:', await response.text());
+      return NextResponse.json(
+        { error: 'Error fetching data from AniList API' },
+        { status: response.status }
+      );
+    }
+
     const data = await response.json();
 
     if (data.errors) {
-      return NextResponse.json({ error: 'Error fetching data from AniList API' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Error fetching data from AniList API' },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json(data.data.Page.media);
