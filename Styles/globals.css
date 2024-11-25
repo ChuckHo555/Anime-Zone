@@ -28,7 +28,7 @@ body {
   min-height:650px
 }
 
-/* Home Page*/
+/* Welcome Page*/
 @layer components {
   
   .welcome-container{
@@ -122,16 +122,17 @@ body {
 /*Home Pages*/
 @layer components{
   .home-container{
-    @apply border-red-500 border-[24px] border-solid /* border settings */
+    @apply border-red-500 border-[12px] border-solid /* border settings */
     flex flex-col justify-start items-center
     w-full h-full
    text-white text-2xl
-    bg-black;
+    bg-black overflow-hidden
+
   }
   .home-wrapper{
     @apply border-blue-500 border-[12px] border-solid
     flex justify-start items-start
-    p-2 gap-4
+    p-3 gap-4
     w-full h-full
     overflow-y-scroll
   }
@@ -143,6 +144,30 @@ body {
     bg-red-600
   }
 }
+
+/*Detailed Anime Page*/
+@layer components{
+  .anime-detail-container {
+    padding: 2rem;
+  }
+  
+  .anime-detail-container img {
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .anime-detail-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .anime-detail-container p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+}
+
 
 
 

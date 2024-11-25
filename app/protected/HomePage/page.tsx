@@ -1,40 +1,28 @@
-import { SignOutButton } from "@clerk/nextjs";
-import VerifyUser from "@/app/components/Auth/VerifyUser";
-import AnimeCard from "@/app/components/Card";
 import { AnimeCardProps } from "@/util/constants";
-import Log from "@/app/components/Log"
+import AnimeCarousel from "@/app/components/Carousel";
 
 async function fetchPopularAnime() {
-  const res = await fetch("http://localhost:3000/api/popularAnime");
+  const res = await fetch("http://localhost:3000/api/getAnime?type=popular", {
+  });
+
   if (!res.ok) {
     throw new Error("Failed to fetch popular anime");
   }
+
   return res.json();
 }
 
 export default async function HomePage() {
-  const popularList = await fetchPopularAnime();
-  // console.log(popularList);
+  const popularList: AnimeCardProps["anime"][] = await fetchPopularAnime();
 
   return (
     <div className="home-container">
       <div className="user-header">
-        <VerifyUser />
-        {/* <SignOutButton /> */}
+        <p>Welcome to Anime Zone!</p>
       </div>
-        {/* <Log data={popularList}/> */}
-        <div className="home-wrapper">
-          <div className= "anime-list-container flex flex-wrap justify-evenly gap-4 p-4">
-      {popularList.map(
-        
-        (anime : AnimeCardProps) => {
-        return <AnimeCard key={anime.id} anime={anime} />
-        }
-      
-      )}
+      <div className="home-wrapper overflow-hidden">
+        <AnimeCarousel animes={popularList} />
       </div>
-    </div>
-        {/* <SignOutButton /> */}
     </div>
   );
 }

@@ -8,6 +8,16 @@ export default {
   ],
   theme: {
     extend: {
+      keyframes:{
+        slideRight:{
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(10px)" },
+        },
+      },
+      animation: {
+        "slide-right": "slideRight 5s linear infinite",
+        "slide-right-image": "slideRight 5s linear infinite",
+      },
     },
   },
   plugins: [],
