@@ -3,12 +3,17 @@ export const routes = {
   auth: { path: "/auth", label: "Auth" },
   signIn: { path: "/sign-in", label: "Sign In" },
   signUp: { path: "/sign-up", label: "Sign Up" },
-  home: { path: "/protected/HomePage", label: "Home Page" },
-  search: { path: "/protected/SearchPage", label: "Search Page" }, // Add this
+  home: { path: "/protected/HomePage", label: "Home" },
+  search: { path: "/protected/SearchPage", label: "Search" }, // Add this
   recommendation: {
     path: "/protected/RecommendationPage",
-    label: "Recommendation Page",
-  },  profile: { path: "/protected/ProfilePage", label: "Profile Page" },
+    label: "Recommendations",
+  }, 
+  yourList: {
+    path: "/protected/YourList",
+    label: "Your List",
+  },   
+  profile: { path: "/protected/ProfilePage", label: "Profile" },
 };
 
 export interface User {
