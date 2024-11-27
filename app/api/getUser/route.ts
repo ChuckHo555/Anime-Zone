@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
     );
     console.log("Database query result:", rows);
 
-    // Insert user if not found
     if (rows.length === 0) {
       console.log("User not found. Inserting into database...");
       await db.query("INSERT INTO users (userId, profilePicUrl, username) VALUES (?, ?, ?)", [

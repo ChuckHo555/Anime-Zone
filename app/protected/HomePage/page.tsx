@@ -1,5 +1,6 @@
 import { AnimeCardProps } from "@/util/constants";
 import AnimeCarousel from "@/app/components/Carousel";
+import VerifyUser from "@/app/components/Auth/VerifyUser";
 
 async function fetchPopularAnime() {
   const res = await fetch("http://localhost:3000/api/getAnime?type=popular", {
@@ -18,7 +19,7 @@ export default async function HomePage() {
   return (
     <div className="home-container">
       <div className="user-header">
-        <p>Welcome to Anime Zone!</p>
+        <VerifyUser/>
       </div>
       <div className="home-wrapper overflow-hidden">
         <AnimeCarousel animes={popularList} />
