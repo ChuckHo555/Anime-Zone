@@ -1,15 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { AnimeCardProps } from "@/util/constants";
 
 interface AnimeCarouselProps {
-  animes: AnimeCardProps["anime"][]; 
+  animes: AnimeCardProps["anime"][];
 }
 
 const AnimeCarousel = ({ animes }: AnimeCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-
 
   useEffect(() => {
     if (animes.length === 0) return;
@@ -18,7 +18,7 @@ const AnimeCarousel = ({ animes }: AnimeCarouselProps) => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % animes.length);
     }, 5000);
 
-    return () => clearInterval(interval); 
+    return () => clearInterval(interval);
   }, [animes]);
 
   if (animes.length === 0) {
@@ -57,9 +57,13 @@ const AnimeCarousel = ({ animes }: AnimeCarouselProps) => {
               <p className="text-orange-400 font-semibold text-xl mb-8">
                 Score: {anime.averageScore}
               </p>
-              <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg">
+              <Link
+                href={`/protected/HomePage?modal=${anime.id}`}
+                scroll={false}
+                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg"
+              >
                 More Details
-              </button>
+              </Link>
             </div>
 
             {/* Anime Image */}
