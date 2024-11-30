@@ -70,7 +70,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       isInFavorites: favoritesRows.length > 0,
-      isInWatchList: watchLaterRows.length > 0,
+      isInWatchLater: watchLaterRows.length > 0,
     });
   } catch (error) {
     console.error("Database error checking list status:", error);

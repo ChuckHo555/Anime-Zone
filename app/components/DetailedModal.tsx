@@ -17,7 +17,7 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
   const [notification, setNotification] = useState<string | null>(null);
   const [episodesWatched, setEpisodesWatched] = useState<number>(0);
   const [progress, setProgress] = useState<string>("Not Watched");
-  const [isInWatchList, setIsInWatchList] = useState<boolean>(false);
+  const [isInWatchLater, setIsInWatchLater] = useState<boolean>(false);
   const [isInFavorites, setIsInFavorites] = useState<boolean>(false);
   const router = useRouter();
 
@@ -26,22 +26,7 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
     tempDiv.innerHTML = str;
     return tempDiv.textContent || tempDiv.innerText || "";
   };
-  const checkUserLists = async () => {
-    if (!userId) return;
-  
-    try {
-      const response = await fetch(`/api/manageYourList?userId=${userId}&animeId=${animeId}`);
-      if (!response.ok) {
-        throw new Error("Failed to check user lists.");
-      }
-      const { watchLater, favorites } = await response.json();
-      setIsInWatchList(watchLater); // This must correctly reflect the DB state
-      setIsInFavorites(favorites);
-    } catch (error) {
-      console.error("Error checking user lists:", error);
-    }
-  };
-  
+
   const updateProgress = async (watched: number) => {
     if (watched > (animeDetails?.episodes || 0)) return;
 
@@ -94,7 +79,7 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
 
           if (listResponse.ok) {
             const { isInWatchLater, isInFavorites } = await listResponse.json();
-            setIsInWatchList(isInWatchLater);
+            setIsInWatchLater(isInWatchLater);
             setIsInFavorites(isInFavorites);
           }
 
@@ -104,7 +89,7 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
           );
 
           if (statusResponse.ok) {
-                        const { episodesWatched, status } = await statusResponse.json();
+            const { episodesWatched, status } = await statusResponse.json();
             setEpisodesWatched(episodesWatched || 0);
             setProgress(status || "Not Watched");
           }
@@ -117,7 +102,29 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
       }
     };
 
+    const checkUserLists = async () => {
+      if (!userId) return;
+
+      try {
+        const response = await fetch(
+          `/api/manageYourList?userId=${userId}&animeId=${animeId}`
+        );
+        console.log("Raw API Response:", response);
+        if (!response.ok) {
+          throw new Error("Failed to check user lists.");
+        }
+        const { isInWatchLater, isInFavorites } = await response.json();
+        console.log("Fetched Watch Later:", isInWatchLater); // Debug log
+        console.log("Fetched Favorites:", isInFavorites); // Debug log
+        setIsInWatchLater(isInWatchLater);
+        setIsInFavorites(isInFavorites);
+      } catch (error) {
+        console.error("Error checking user lists:", error);
+      }
+    };
+
     fetchAnimeDetails();
+    checkUserLists(); // Add this to ensure state sync
   }, [animeId, userId]);
 
   const handleNotification = (message: string) => {
@@ -125,41 +132,49 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  const handleAction = async (listType: "favorites" | "watchLater", isAdding: boolean) => {
+  const handleAction = async (
+    listType: "favorites" | "watchLater",
+    isAdding: boolean
+  ) => {
     if (!userId) {
       handleNotification("You need to log in to perform this action.");
       return;
     }
-  
+
     try {
       const response = await fetch("/api/manageYourList", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ animeId, userId, listType, genres }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to update list.");
       }
-  
+
       const { message } = await response.json();
-  
+
       if (listType === "watchLater") {
-        setIsInWatchList(!isInWatchList);
-        handleNotification(isAdding ? "Added to Watch Later!" : "Removed from Watch Later!");
+        console.log("Before Toggle Watch List:", isInWatchLater); // Debug log
+        setIsInWatchLater(!isInWatchLater);
+        console.log("After Toggle Watch List:", !isInWatchLater); // Debug log
+        handleNotification(
+          isAdding ? "Added to Watch Later!" : "Removed from Watch Later!"
+        );
       } else if (listType === "favorites") {
+        console.log("Before Toggle Favorites:", isInFavorites); // Debug log
         setIsInFavorites(!isInFavorites);
-        handleNotification(isAdding ? "Added to Favorites!" : "Removed from Favorites!");
+        console.log("After Toggle Favorites:", !isInFavorites); // Debug log
+        handleNotification(
+          isAdding ? "Added to Favorites!" : "Removed from Favorites!"
+        );
       }
-      
     } catch (error) {
       console.error("Error updating list:", error);
       handleNotification("An error occurred. Please try again.");
     }
   };
-  
-  
 
   const handleEpisodesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const watched = parseInt(e.target.value, 10) || 0;
@@ -238,7 +253,9 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
         {/* Right Column */}
         <div className="w-2/3 p-4 flex flex-col gap-4">
           {/* Name */}
-          <h2 className="text-3xl font-bold">{title.english || title.romaji}</h2>
+          <h2 className="text-3xl font-bold">
+            {title.english || title.romaji}
+          </h2>
 
           {/* Details */}
           <div className="flex flex-wrap gap-2 text-sm text-gray-300">
@@ -249,7 +266,8 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
               <strong>Score:</strong> {averageScore || "N/A"}
             </p>
             <p>
-              <strong>Aired Date:</strong> {season || "Unknown"} {seasonYear || ""}
+              <strong>Aired Date:</strong> {season || "Unknown"}{" "}
+              {seasonYear || ""}
             </p>
           </div>
 
@@ -293,24 +311,27 @@ const DetailedAnimeModal = ({ animeId }: DetailedAnimeModalProps) => {
 
           {/* Buttons */}
           <div className="flex justify-start gap-4">
-  <button
-    className={`flex-1 ${
-      isInWatchList ? "bg-red-600" : "bg-blue-600"
-    } hover:${isInWatchList ? "bg-red-700" : "bg-blue-700"} text-white py-3 px-6 rounded-md text-center`}
-    onClick={() => handleAction("watchLater", !isInWatchList)}
-  >
-    {isInWatchList ? "Remove from Watch List" : "Add to Watch List"}
-  </button>
-  <button
-    className={`flex-1 ${
-      isInFavorites ? "bg-red-600" : "bg-orange-600"
-    } hover:${isInFavorites ? "bg-red-700" : "bg-orange-700"} text-white py-3 px-6 rounded-md text-center`}
-    onClick={() => handleAction("favorites", !isInFavorites)}
-  >
-    {isInFavorites ? "Remove from Favorites" : "Add to Favorites"}
-  </button>
-</div>
-
+            <button
+              className={`flex-1 ${
+                isInWatchLater ? "bg-red-600" : "bg-blue-600"
+              } hover:${
+                isInWatchLater ? "bg-red-700" : "bg-blue-700"
+              } text-white py-3 px-6 rounded-md text-center`}
+              onClick={() => handleAction("watchLater", !isInWatchLater)}
+            >
+              {isInWatchLater ? "Remove from Watch List" : "Add to Watch List"}
+            </button>
+            <button
+              className={`flex-1 ${
+                isInFavorites ? "bg-red-600" : "bg-orange-600"
+              } hover:${
+                isInFavorites ? "bg-red-700" : "bg-orange-700"
+              } text-white py-3 px-6 rounded-md text-center`}
+              onClick={() => handleAction("favorites", !isInFavorites)}
+            >
+              {isInFavorites ? "Remove from Favorites" : "Add to Favorites"}
+            </button>
+          </div>
         </div>
 
         {/* Close Button */}
