@@ -10,16 +10,34 @@ interface AnimeCarouselProps {
 
 const AnimeCarousel = ({ animes }: AnimeCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (animes.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % animes.length);
-    }, 5000);
+      setProgress((prev) => (prev < 100 ? prev + 2 : 0)); // Increment progress
+
+      if (progress === 100) {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % animes.length); // Move to next slide
+        setProgress(0); // Reset progress
+      }
+    }, 100); // Progress updates every 100ms (5 seconds total for full progress)
 
     return () => clearInterval(interval);
-  }, [animes]);
+  }, [animes, progress]);
+
+  const handleNext = () => {
+    setProgress(0); // Reset progress on manual navigation
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % animes.length);
+  };
+
+  const handlePrev = () => {
+    setProgress(0); // Reset progress on manual navigation
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? animes.length - 1 : prevIndex - 1
+    );
+  };
 
   if (animes.length === 0) {
     return <div className="text-white text-center">Loading...</div>;
@@ -77,6 +95,43 @@ const AnimeCarousel = ({ animes }: AnimeCarouselProps) => {
           </div>
         </div>
       ))}
+
+      {/* Left Arrow */}
+      <button
+        onClick={handlePrev}
+        className="absolute top-1/2 left-4 transform -translate-y-1/2 z-20 text-white text-4xl"
+        aria-label="Previous"
+      >
+        ❮
+      </button>
+
+      {/* Right Arrow */}
+      <button
+        onClick={handleNext}
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 z-20 text-white text-4xl"
+        aria-label="Next"
+      >
+        ❯
+      </button>
+
+      {/* Progress Indicators */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+        {animes.map((_, index) => (
+          <div
+            key={index}
+            className="w-8 h-1 bg-gray-700 rounded overflow-hidden"
+          >
+            <div
+              className={`h-full ${
+                index === currentIndex ? "bg-red-500" : "bg-gray-500"
+              }`}
+              style={{
+                width: index === currentIndex ? `${progress}%` : "0%",
+              }}
+            ></div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

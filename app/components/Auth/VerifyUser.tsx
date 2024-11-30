@@ -26,7 +26,7 @@ export default function VerifyUser() {
           body: JSON.stringify({
             userId: user.id,
             profilePicUrl: user.imageUrl,
-            username:user.username,
+            username: user.username,
           }),
         });
 
@@ -46,7 +46,5 @@ export default function VerifyUser() {
     verifyUser();
   }, [isSignedIn, user]);
 
-  return <div className=' flex font-semibold size-9'>
-    Welcome,&nbsp;<span className="text-purle-50">{ user?.username || "Guest"}
-      </span>!</div>;
+  return null; // No UI elements here
 }

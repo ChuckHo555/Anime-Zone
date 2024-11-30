@@ -22,15 +22,26 @@ export async function POST(req: NextRequest) {
     console.log("Database query result:", rows);
 
     if (rows.length === 0) {
+      // User not found, insert into database
       console.log("User not found. Inserting into database...");
-      await db.query("INSERT INTO users (userId, profilePicUrl, username) VALUES (?, ?, ?)", [
-        userId,
-        profilePicUrl,
-        username,
-      ]);
+      await db.query(
+        "INSERT INTO users (userId, profilePicUrl, username) VALUES (?, ?, ?)",
+        [userId, profilePicUrl, username]
+      );
       console.log("User inserted successfully.");
     } else {
-      console.log("User already exists in database.");
+      // User exists, check for changes in the username
+      const existingUser = rows[0];
+      if (existingUser.username !== username) {
+        console.log("Username has changed. Updating the database...");
+        await db.query(
+          "UPDATE users SET username = ? WHERE userId = ?",
+          [username, userId]
+        );
+        console.log("Username updated successfully.");
+      } else {
+        console.log("Username has not changed.");
+      }
     }
 
     return NextResponse.json({ message: "User stored successfully" }, { status: 200 });

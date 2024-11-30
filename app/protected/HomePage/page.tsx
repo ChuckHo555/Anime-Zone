@@ -22,13 +22,12 @@ export default async function HomePage({
   const popularList: AnimeCardProps["anime"][] = await fetchPopularAnime();
 
   const animeId = resolvedSearchParams.modal;
-
   return (
     <div className="home-container relative">
-      {/* Verify User Section */}
       <div className="user-header">
         <VerifyUser />
-      </div>
+          Get Started with these popular animes!
+        </div>
 
       {/* Carousel Section */}
       <div className="home-wrapper overflow-hidden">

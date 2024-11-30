@@ -5,9 +5,10 @@ import { AnimeCardProps } from "@/util/constants";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
-  const animeId = searchParams.animeId; // Extract animeId from query params
+  const resolvedSearchParams = await searchParams; // Await searchParams
+  const animeId = resolvedSearchParams.animeId; // Extract animeId from resolved params
 
   return (
     <div className="search-page-container bg-gray-900 text-white min-h-screen flex flex-col items-center py-8">
