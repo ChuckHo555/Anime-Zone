@@ -47,49 +47,39 @@ export default function YourListComponent() {
 
       console.log("AniList Data:", aniListData);
 
-      const notesRes = await fetch(`/api/getNotes?userId=${user.id}`);
-      if (!notesRes.ok) {
-        throw new Error("Failed to fetch user notes");
-      }
-      const userNotes: { animeId: string; note: string }[] = await notesRes.json();
+      const userNotes = await fetchNotesForAllAnime(animeIds);
 
       console.log("User Notes:", userNotes);
 
       const mergedData: AnimeCardData[] = aniListData.map(
         (anime: {
-          id: string; // Treat as string
+          id: string;
           coverImage: { large: string };
           title: { romaji: string; english?: string };
           genres: string[];
           averageScore: number;
         }): AnimeCardData => {
-          const note = userNotes.find((n) => n.animeId === anime.id)?.note || "";
-      
-          // Ensure animeId comparison as string
-          const statusData = animeData.find((item) => item.animeId === String(anime.id));
-          console.log("Both the Ids :", animeData)
-          console.log("ANime Ids:", anime.id)
+          const noteData = userNotes.find((n) => n.animeId === anime.id) || {
+            note: "",
+            userRating: 0,
+          };
 
-          if (!statusData) {
-            console.error(`No matching status for anime ID ${anime.id}`);
-          } else {
-            console.log(`Mapped status for anime ID ${anime.id}: ${statusData.status}`);
-          }
-          
-      
+          const statusData = animeData.find(
+            (item) => item.animeId === String(anime.id)
+          );
+
           return {
             id: anime.id,
             image: anime.coverImage.large,
             title: anime.title.english || anime.title.romaji,
             genres: anime.genres,
-            userReview: note,
-            userScore: 0,
+            userReview: noteData.note,
+            userScore: noteData.userRating,
             animeScore: anime.averageScore,
-            status: statusData?.status || "Not Watched", // Fallback to "Not Watched"
+            status: statusData?.status || "Not Watched",
           };
         }
       );
-      
 
       console.log("Merged Data:", mergedData);
 
@@ -99,6 +89,23 @@ export default function YourListComponent() {
       setError(err.message || "An error occurred while fetching anime data");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchNotesForAllAnime = async (animeIds: string[]) => {
+    try {
+      const notesRes = await fetch(`/api/getNotes?userId=${user?.id}`);
+      if (!notesRes.ok) {
+        throw new Error("Failed to fetch user notes");
+      }
+
+      const notesData: { animeId: string; note: string; userRating: number }[] =
+        await notesRes.json();
+
+      return notesData.filter((note) => animeIds.includes(note.animeId));
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+      return [];
     }
   };
 
@@ -125,7 +132,7 @@ export default function YourListComponent() {
     const response = await fetch("https://graphql.anilist.co", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, variables: { ids: animeIds.map(Number) } }), // Convert string IDs to numbers for the query
+      body: JSON.stringify({ query, variables: { ids: animeIds.map(Number) } }),
     });
 
     if (!response.ok) {
@@ -136,12 +143,58 @@ export default function YourListComponent() {
     return data.data.Page.media;
   };
 
+  const handleReviewUpdate = async (animeId: string, review: string) => {
+    const payload = { userId: user?.id, animeId, note: review };
+    console.log("Payload for review update:", payload);
+
+    try {
+      const res = await fetch(`/api/getNotes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to update review for anime ID ${animeId}`);
+      }
+
+      console.log(`Review updated successfully for anime ID ${animeId}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleScoreUpdate = async (animeId: string, score: number) => {
+    const payload = { userId: user?.id, animeId, userRating: score };
+    console.log("Payload for score update:", payload);
+
+    try {
+      const res = await fetch(`/api/getNotes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to update score for anime ID ${animeId}`);
+      }
+
+      console.log(`Score updated successfully for anime ID ${animeId}`);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchAnimeList();
   }, [activeTab]);
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4 p-4 w-full">
       <div className="w-full">
         <Tabs tabs={tabs} activeTab={activeTab} onTabClick={setActiveTab} />
       </div>
@@ -153,22 +206,19 @@ export default function YourListComponent() {
         <p className="text-gray-400 text-center">No anime found in this list.</p>
       )}
 
-      <div className="flex flex-wrap justify-center gap-6">
-        {animeList.map((anime) => {
-          console.log("Anime being passed to NoteCard:", anime); // Log each anime object
-          return (
-            <NoteCard
-              key={anime.id}
-              anime={anime}
-              onReviewUpdate={(review: string) =>
-                console.log(`Update review for ${anime.id}: ${review}`)
-              }
-              onScoreUpdate={(score: number) =>
-                console.log(`Update score for ${anime.id}: ${score}`)
-              }
-            />
-          );
-        })}
+      <div className="flex flex-col gap-4 w-full">
+        {animeList.map((anime) => (
+          <NoteCard
+            key={anime.id}
+            anime={anime}
+            onReviewUpdate={(review: string) =>
+              handleReviewUpdate(anime.id, review)
+            }
+            onScoreUpdate={(score: number) =>
+              handleScoreUpdate(anime.id, score)
+            }
+          />
+        ))}
       </div>
     </div>
   );
