@@ -8,7 +8,10 @@ export async function GET(request: Request) {
   const tab = searchParams.get("tab");
 
   if (!userId || !tab) {
-    return NextResponse.json({ error: "Missing userId or tab" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing userId or tab" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -48,13 +51,18 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: "Invalid tab" }, { status: 400 });
     }
 
-    const [rows] = (await db.query(query, [userId])) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
+    const [rows] = (await db.query(query, [userId])) as [
+      mysql.RowDataPacket[],
+      mysql.FieldPacket[]
+    ];
 
     console.log("getYourList Response:", rows); // Debug log
     return NextResponse.json(rows || []);
   } catch (error) {
     console.error("Error fetching anime list:", error);
-    return NextResponse.json({ error: "Failed to fetch anime list" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch anime list" },
+      { status: 500 }
+    );
   }
 }
-

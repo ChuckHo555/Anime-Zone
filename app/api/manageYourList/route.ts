@@ -54,7 +54,10 @@ export async function GET(request: Request) {
   const animeId = searchParams.get("animeId");
 
   if (!userId || !animeId) {
-    return NextResponse.json({ error: "Missing userId or animeId" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing userId or animeId" },
+      { status: 400 }
+    );
   }
 
   try {

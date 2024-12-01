@@ -109,7 +109,6 @@ body {
 
     /* additional settings */
     text-white text-2xl
-    bg-black;
   }
   .auth-wrapper{
     @apply border-blue-500 border-[12px] border-solid

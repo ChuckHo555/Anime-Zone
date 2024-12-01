@@ -42,20 +42,19 @@ export async function GET(request: Request) {
         return counts;
       }, {});
 
-  // Find the most repeated genre safely and simply
-  const mostRepeatedGenre = Object.entries(genreCounts).reduce(
-  (max: { genre: string | null; count: number }, [genre, count]) =>
-    count > max.count ? { genre, count } : max,
-  { genre: null, count: 0 }
-).genre;
+    // Find the most repeated genre safely and simply
+    const mostRepeatedGenre = Object.entries(genreCounts).reduce(
+      (max: { genre: string | null; count: number }, [genre, count]) =>
+        count > max.count ? { genre, count } : max,
+      { genre: null, count: 0 }
+    ).genre;
 
-if (!mostRepeatedGenre) {
-  return NextResponse.json(
-    { message: "No valid genres available for recommendations" },
-    { status: 404 }
-  );
-}
-
+    if (!mostRepeatedGenre) {
+      return NextResponse.json(
+        { message: "No valid genres available for recommendations" },
+        { status: 404 }
+      );
+    }
 
     // Prepare query for AniList API with the most repeated genre
     const query = `

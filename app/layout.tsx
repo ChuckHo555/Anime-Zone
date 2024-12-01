@@ -31,11 +31,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} h-full`}
       >
         <ClerkProvider>
-          {/* Background video */}
           <BackgroundVideo />
-
-          {/* Content overlay */}
-          <div className="content-overlay">{children}</div>
+        {children}
         </ClerkProvider>
       </body>
     </html>

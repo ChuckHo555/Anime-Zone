@@ -80,10 +80,16 @@ export async function GET(request: Request) {
 
 // POST function: Update or add the viewing status
 export async function POST(request: Request) {
-  const { animeId, userId, episodesWatched, totalEpisodes } = await request.json();
+  const { animeId, userId, episodesWatched, totalEpisodes } =
+    await request.json();
 
   // Validate inputs
-  if (!animeId || !userId || typeof episodesWatched === "undefined" || typeof totalEpisodes === "undefined") {
+  if (
+    !animeId ||
+    !userId ||
+    typeof episodesWatched === "undefined" ||
+    typeof totalEpisodes === "undefined"
+  ) {
     return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
   }
 
@@ -119,6 +125,9 @@ export async function POST(request: Request) {
     }
   } catch (error) {
     console.error("Database error:", error);
-    return NextResponse.json({ error: "Failed to update viewing status" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to update viewing status" },
+      { status: 500 }
+    );
   }
 }
