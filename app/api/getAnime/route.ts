@@ -4,88 +4,121 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const animeId = searchParams.get("id");
   const type = searchParams.get("type") || "general";
-  const search = searchParams.get("search"); // New search parameter
+  const search = searchParams.get("search");
 
   try {
-    const query =
-      search
-        ? ` 
-          query {
-            Page(page: 1, perPage: 10) {
-              media(search: "${search}", type: ANIME) {
-                id
-                title {
-                  romaji
-                  english
-                }
-                coverImage {
-                  large
-                }
-                averageScore
-                genres
-              }
-            }
-          }
-        `
-        : animeId
-        ? ` 
-          query {
-            Media(id: ${animeId}) {
+    let query;
+
+    if (search) {
+      // Search query
+      query = `
+        query {
+          Page(page: 1, perPage: 10) {
+            media(search: "${search}", type: ANIME) {
               id
               title {
                 romaji
                 english
-                native
               }
-              description
-              genres
-              averageScore
               coverImage {
                 large
               }
-              episodes
-              season
-              seasonYear
+              averageScore
+              genres
             }
           }
-        `
-        : type === "popular"
-        ? ` 
-          query {
-            Page(page: 1, perPage: 10) {
-              media(sort: POPULARITY_DESC, type: ANIME) {
-                id
-                title {
-                  romaji
-                  english
-                }
-                coverImage {
-                  large
-                }
-                averageScore
-                genres
+        }
+      `;
+    } else if (animeId) {
+      // Specific anime details
+      query = `
+        query {
+          Media(id: ${animeId}) {
+            id
+            title {
+              romaji
+              english
+              native
+            }
+            description
+            genres
+            averageScore
+            coverImage {
+              large
+            }
+            episodes
+            season
+            seasonYear
+          }
+        }
+      `;
+    } else if (type === "popular") {
+      // Popular anime
+      query = `
+        query {
+          Page(page: 1, perPage: 10) {
+            media(sort: POPULARITY_DESC, type: ANIME) {
+              id
+              title {
+                romaji
+                english
               }
-            }
-          }
-        `
-        : ` 
-          query {
-            Page(page: 1, perPage: 20) {
-              media(type: ANIME) {
-                id
-                title {
-                  romaji
-                  english
-                }
-                coverImage {
-                  large
-                }
-                averageScore
-                genres
+              coverImage {
+                large
               }
+              averageScore
+              genres
             }
           }
-        `;
+        }
+      `;
+    } else if (type === "seasonal") {
+      // Seasonal anime
+      const currentYear = new Date().getFullYear();
+      const currentMonth = new Date().getMonth();
+
+      const seasons = ["WINTER", "SPRING", "SUMMER", "FALL"];
+      const currentSeason = seasons[Math.floor((currentMonth + 1) / 3) % 4];
+
+      query = `
+        query {
+          Page(page: 1, perPage: 10) {
+            media(season: ${currentSeason}, seasonYear: ${currentYear}, type: ANIME) {
+              id
+              title {
+                romaji
+                english
+              }
+              coverImage {
+                large
+              }
+              averageScore
+              genres
+            }
+          }
+        }
+      `;
+    } else {
+      // Default query
+      query = `
+        query {
+          Page(page: 1, perPage: 20) {
+            media(type: ANIME) {
+              id
+              title {
+                romaji
+                english
+              }
+              coverImage {
+                large
+              }
+              averageScore
+              genres
+            }
+          }
+        }
+      `;
+    }
 
     const url = "https://graphql.anilist.co";
     const options = {
@@ -101,20 +134,26 @@ export async function GET(request: Request) {
     const data = await response.json();
 
     if (data.errors) {
-      return NextResponse.json({ error: "Error fetching data from AniList API" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Error fetching data from AniList API" },
+        { status: 500 }
+      );
     }
 
     if (search) {
       return NextResponse.json(data.data.Page.media); // Return search results
     } else if (animeId) {
       return NextResponse.json(data.data.Media); // Return detailed anime
-    } else if (type === "popular") {
-      return NextResponse.json(data.data.Page.media); // Return popular anime
+    } else if (type === "popular" || type === "seasonal") {
+      return NextResponse.json(data.data.Page.media); // Return popular or seasonal anime
     } else {
       return NextResponse.json(data.data.Page.media); // Default general anime
     }
   } catch (error) {
     console.error("Error fetching anime:", error);
-    return NextResponse.json({ error: "Failed to fetch anime" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch anime" },
+      { status: 500 }
+    );
   }
 }

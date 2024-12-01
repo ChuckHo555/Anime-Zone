@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     // Fetch user's saved genres from favorites and watchLater
     const [rows] = (await db.query(
       `
-      SELECT DISTINCT genres
+      SELECT genres
       FROM (
         SELECT genres
         FROM favorites
@@ -32,32 +32,36 @@ export async function GET(request: Request) {
       [userId, userId]
     )) as [GenreRow[], mysql.FieldPacket[]];
 
-    // If no genres found, return 404
-    if (rows.length === 0) {
-      return NextResponse.json(
-        { message: "No genres found for recommendations" },
-        { status: 404 }
-      );
-    }
-
-    // Extract genres from rows, ensure filtering null or empty genres
-    const genres = rows
+    // Extract and count genre occurrences
+    const genreCounts = rows
       .flatMap((row) => (row.genres ? row.genres.split(",") : []))
       .map((genre) => genre.trim())
-      .filter(Boolean); // Remove empty or invalid entries
+      .filter(Boolean)
+      .reduce((counts: Record<string, number>, genre) => {
+        counts[genre] = (counts[genre] || 0) + 1;
+        return counts;
+      }, {});
 
-    if (genres.length === 0) {
-      return NextResponse.json(
-        { message: "No valid genres available for recommendations" },
-        { status: 404 }
-      );
-    }
+  // Find the most repeated genre safely and simply
+  const mostRepeatedGenre = Object.entries(genreCounts).reduce(
+  (max: { genre: string | null; count: number }, [genre, count]) =>
+    count > max.count ? { genre, count } : max,
+  { genre: null, count: 0 }
+).genre;
 
-    // Prepare query for AniList API to fetch recommendations based on genres
+if (!mostRepeatedGenre) {
+  return NextResponse.json(
+    { message: "No valid genres available for recommendations" },
+    { status: 404 }
+  );
+}
+
+
+    // Prepare query for AniList API with the most repeated genre
     const query = `
       query {
-        Page(page: 1, perPage: 10) {
-          media(genre_in: [${genres.map((genre) => `"${genre}"`).join(", ")}], type: ANIME) {
+        Page(page: 1, perPage: 20) {
+          media(genre_in: ["${mostRepeatedGenre}"], type: ANIME) {
             id
             title {
               romaji

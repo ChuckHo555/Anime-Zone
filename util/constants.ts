@@ -5,9 +5,9 @@ export const routes = {
   signUp: { path: "/sign-up", label: "Sign Up" },
   home: { path: "/protected/HomePage", label: "Home" },
   search: { path: "/protected/SearchPage", label: "Search" }, // Add this
-  recommendation: {
-    path: "/protected/RecommendationPage",
-    label: "Recommendations",
+  forYou: {
+    path: "/protected/ForYou",
+    label: "For You",
   }, 
   yourList: {
     path: "/protected/YourList",
@@ -37,7 +37,7 @@ export interface AnimeCardProps {
 }
 
 export interface Anime {
-  id: number;
+  id: string;
   title: {
     romaji: string;
     english?: string;
@@ -56,3 +56,15 @@ export interface Anime {
   season?: string;
   year?: number;
 }
+
+export interface AnimeCardData {
+  id: string; 
+  image: string;
+  title: string;
+  genres: string[];
+  userReview: string;
+  userScore: number;
+  animeScore: number;
+  status: string;
+}
+

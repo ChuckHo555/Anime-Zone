@@ -2,32 +2,79 @@ import { NextResponse } from "next/server";
 import db from "@/util/connection";
 import mysql from "mysql2/promise";
 
-// GET function: Fetch the current viewing status for a specific user and anime
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
   const animeId = searchParams.get("animeId");
+  const animeIdsParam = searchParams.get("animeIds");
 
   // Validate query parameters
-  if (!userId || !animeId) {
-    return NextResponse.json({ error: "Missing userId or animeId" }, { status: 400 });
+  if (!userId) {
+    return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+  }
+  if (!animeId && !animeIdsParam) {
+    return NextResponse.json(
+      { error: "Missing animeId or animeIds" },
+      { status: 400 }
+    );
   }
 
   try {
-    const [rows] = (await db.query(
-      `SELECT episodesWatched, totalEpisodes, status FROM viewing_status WHERE userId = ? AND animeId = ?`,
-      [userId, animeId]
-    )) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
+    if (animeId) {
+      // Fetch status for a single anime ID
+      const [rows] = (await db.query(
+        `SELECT episodesWatched, totalEpisodes, status FROM viewing_status WHERE userId = ? AND animeId = ?`,
+        [userId, animeId]
+      )) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
 
-    if (rows.length === 0) {
-      // Return default status if no record exists
-      return NextResponse.json({ episodesWatched: 0, totalEpisodes: 0, status: "Not Watched" });
+      if (rows.length === 0) {
+        // Return default status if no record exists
+        return NextResponse.json({
+          animeId: parseInt(animeId, 10),
+          episodesWatched: 0,
+          totalEpisodes: 0,
+          status: "Not Watched",
+        });
+      }
+
+      return NextResponse.json(rows[0]); // Return the found record
+    } else if (animeIdsParam) {
+      // Fetch status for multiple anime IDs
+      const animeIds = animeIdsParam.split(",").map((id) => parseInt(id, 10));
+
+      if (!animeIds.length) {
+        return NextResponse.json([]); // Return empty if no valid IDs
+      }
+
+      const placeholders = animeIds.map(() => "?").join(",");
+      const [rows] = (await db.query(
+        `SELECT animeId, episodesWatched, totalEpisodes, status 
+         FROM viewing_status 
+         WHERE userId = ? AND animeId IN (${placeholders})`,
+        [userId, ...animeIds]
+      )) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
+
+      // Map results to ensure all anime IDs are included
+      const results = animeIds.map((id) => {
+        const match = rows.find((row) => row.animeId === id);
+        return (
+          match || {
+            animeId: id,
+            episodesWatched: 0,
+            totalEpisodes: 0,
+            status: "Not Watched",
+          }
+        );
+      });
+
+      return NextResponse.json(results);
     }
-
-    return NextResponse.json(rows[0]); // Return the found record
   } catch (error) {
     console.error("Database error fetching viewing status:", error);
-    return NextResponse.json({ error: "Failed to fetch viewing status" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch viewing status" },
+      { status: 500 }
+    );
   }
 }
 
