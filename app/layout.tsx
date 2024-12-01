@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/Styles/globals.css";
-import { ClerkProvider } from '@clerk/nextjs';
+import { ClerkProvider } from "@clerk/nextjs";
+import BackgroundVideo from "@/app/components/Background";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -21,16 +22,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} h-full`}
       >
-        <ClerkProvider dynamic>
-        {children}
+        <ClerkProvider>
+          {/* Background video */}
+          <BackgroundVideo />
+
+          {/* Content overlay */}
+          <div className="content-overlay">{children}</div>
         </ClerkProvider>
       </body>
     </html>

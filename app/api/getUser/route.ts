@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     console.log("Request body:", body);
 
-    const { userId, profilePicUrl, username } = body;
+    const { userId, username } = body;
 
     if (!userId) {
       console.error("Missing userId in request body");
@@ -25,8 +25,8 @@ export async function POST(req: NextRequest) {
       // User not found, insert into database
       console.log("User not found. Inserting into database...");
       await db.query(
-        "INSERT INTO users (userId, profilePicUrl, username) VALUES (?, ?, ?)",
-        [userId, profilePicUrl, username]
+        "INSERT INTO users (userId, username) VALUES (?, ?)",
+        [userId,username]
       );
       console.log("User inserted successfully.");
     } else {

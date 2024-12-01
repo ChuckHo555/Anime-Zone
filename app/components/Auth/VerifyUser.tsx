@@ -25,7 +25,6 @@ export default function VerifyUser() {
           },
           body: JSON.stringify({
             userId: user.id,
-            profilePicUrl: user.imageUrl,
             username: user.username,
           }),
         });
