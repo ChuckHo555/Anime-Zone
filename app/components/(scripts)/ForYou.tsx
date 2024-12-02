@@ -57,7 +57,6 @@ const RecommendationSeasonalSection = () => {
       return <p className="text-center text-white">No anime available.</p>;
     }
 
-    // Fixed layout for 5 anime cards per row
     return (
       <div className="flex flex-wrap justify-center items-start p-4 gap-4 w-full">
         {animeList.map((anime) => (
