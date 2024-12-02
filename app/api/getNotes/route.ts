@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import db from "@/util/connection";
 import mysql from "mysql2/promise";
 
-// GET: Fetch user notes
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId");
@@ -22,10 +21,10 @@ export async function GET(request: Request) {
     )) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
 
     if (rows.length === 0) {
-      return NextResponse.json({ note: "", userRating: 0 }); // Default values if no data is found
+      return NextResponse.json({ note: "", userRating: 0 }); 
     }
 
-    return NextResponse.json(rows[0]); // Return the specific note and userRating
+    return NextResponse.json(rows[0]); 
   } catch (error) {
     console.error("Error fetching notes:", error);
     return NextResponse.json(
@@ -38,7 +37,6 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const { userId, animeId, note, userRating } = await request.json();
 
-  // Log incoming data to ensure it's received correctly
   console.log("POST received data:", { userId, animeId, note, userRating });
 
   if (!userId || !animeId) {
@@ -48,7 +46,6 @@ export async function POST(request: Request) {
     );
   }
 
-  // Ensure userRating validation only if it exists
   if (userRating !== undefined) {
     const parsedRating = parseInt(userRating, 10);
     if (isNaN(parsedRating) || parsedRating < 0 || parsedRating > 100) {

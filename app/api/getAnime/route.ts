@@ -10,7 +10,6 @@ export async function GET(request: Request) {
     let query;
 
     if (search) {
-      // Search query
       query = `
         query {
           Page(page: 1, perPage: 10) {
@@ -30,7 +29,6 @@ export async function GET(request: Request) {
         }
       `;
     } else if (animeId) {
-      // Specific anime details
       query = `
         query {
           Media(id: ${animeId}) {
@@ -53,7 +51,6 @@ export async function GET(request: Request) {
         }
       `;
     } else if (type === "popular") {
-      // Popular anime
       query = `
         query {
           Page(page: 1, perPage: 10) {
@@ -73,7 +70,6 @@ export async function GET(request: Request) {
         }
       `;
     } else if (type === "seasonal") {
-      // Seasonal anime
       const currentYear = new Date().getFullYear();
       const currentMonth = new Date().getMonth();
 
@@ -141,13 +137,13 @@ export async function GET(request: Request) {
     }
 
     if (search) {
-      return NextResponse.json(data.data.Page.media); // Return search results
+      return NextResponse.json(data.data.Page.media); 
     } else if (animeId) {
-      return NextResponse.json(data.data.Media); // Return detailed anime
+      return NextResponse.json(data.data.Media); 
     } else if (type === "popular" || type === "seasonal") {
-      return NextResponse.json(data.data.Page.media); // Return popular or seasonal anime
+      return NextResponse.json(data.data.Page.media); 
     } else {
-      return NextResponse.json(data.data.Page.media); // Default general anime
+      return NextResponse.json(data.data.Page.media); 
     }
   } catch (error) {
     console.error("Error fetching anime:", error);

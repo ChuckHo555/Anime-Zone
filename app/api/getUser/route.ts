@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Query to check if user already exists
     const [rows] = await db.query<RowDataPacket[]>(
       "SELECT * FROM users WHERE userId = ?",
       [userId]
@@ -22,7 +21,6 @@ export async function POST(req: NextRequest) {
     console.log("Database query result:", rows);
 
     if (rows.length === 0) {
-      // User not found, insert into database
       console.log("User not found. Inserting into database...");
       await db.query("INSERT INTO users (userId, username) VALUES (?, ?)", [
         userId,
@@ -30,7 +28,6 @@ export async function POST(req: NextRequest) {
       ]);
       console.log("User inserted successfully.");
     } else {
-      // User exists, check for changes in the username
       const existingUser = rows[0];
       if (existingUser.username !== username) {
         console.log("Username has changed. Updating the database...");

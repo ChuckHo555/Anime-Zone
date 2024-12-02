@@ -3,7 +3,7 @@ import db from "@/util/connection";
 import mysql from "mysql2/promise";
 
 interface GenreRow extends mysql.RowDataPacket {
-  genres: string | null; // Ensure the type accounts for null values
+  genres: string | null; 
 }
 
 export async function GET(request: Request) {
@@ -15,7 +15,6 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Fetch user's saved genres from favorites and watchLater
     const [rows] = (await db.query(
       `
       SELECT genres
@@ -32,7 +31,6 @@ export async function GET(request: Request) {
       [userId, userId]
     )) as [GenreRow[], mysql.FieldPacket[]];
 
-    // Extract and count genre occurrences
     const genreCounts = rows
       .flatMap((row) => (row.genres ? row.genres.split(",") : []))
       .map((genre) => genre.trim())
@@ -42,7 +40,6 @@ export async function GET(request: Request) {
         return counts;
       }, {});
 
-    // Find the most repeated genre safely and simply
     const mostRepeatedGenre = Object.entries(genreCounts).reduce(
       (max: { genre: string | null; count: number }, [genre, count]) =>
         count > max.count ? { genre, count } : max,
@@ -56,7 +53,6 @@ export async function GET(request: Request) {
       );
     }
 
-    // Prepare query for AniList API with the most repeated genre
     const query = `
       query {
         Page(page: 1, perPage: 20) {
@@ -104,7 +100,7 @@ export async function GET(request: Request) {
       genres: anime.genres,
     }));
 
-    return NextResponse.json(recommendations); // Return formatted recommendations
+    return NextResponse.json(recommendations);
   } catch (error) {
     console.error("Error fetching recommendations:", error);
     return NextResponse.json(

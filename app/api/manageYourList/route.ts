@@ -5,7 +5,6 @@ import mysql from "mysql2/promise";
 export async function POST(request: Request) {
   const { animeId, userId, listType, genres } = await request.json();
 
-  // Validate inputs
   if (!animeId || !userId || !listType || !genres || !Array.isArray(genres)) {
     return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
   }
@@ -18,21 +17,18 @@ export async function POST(request: Request) {
   try {
     const tableName = listType === "favorites" ? "favorites" : "watchLater";
 
-    // Check if the anime already exists in the list
     const [rows] = (await db.query(
       `SELECT * FROM ${tableName} WHERE userId = ? AND animeId = ?`,
       [userId, animeId]
     )) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
 
     if (rows.length > 0) {
-      // Remove from the list
       await db.query(
         `DELETE FROM ${tableName} WHERE userId = ? AND animeId = ?`,
         [userId, animeId]
       );
       return NextResponse.json({ message: `${listType} removed` });
     } else {
-      // Add to the list, include genres
       await db.query(
         `INSERT INTO ${tableName} (userId, animeId, genres) VALUES (?, ?, ?)`,
         [userId, animeId, genres.join(",")]
