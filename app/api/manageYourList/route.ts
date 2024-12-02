@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const tableName = listType === "favorites" ? "favorites" : "watchLater";
+    const tableName = listType === "favorites" ? "favorites" : "watchlater";
 
     const [rows] = (await db.query(
       `SELECT * FROM ${tableName} WHERE userId = ? AND animeId = ?`,
@@ -63,7 +63,7 @@ export async function GET(request: Request) {
     )) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
 
     const [watchLaterRows] = (await db.query(
-      `SELECT * FROM watchLater WHERE userId = ? AND animeId = ?`,
+      `SELECT * FROM watchlater WHERE userId = ? AND animeId = ?`,
       [userId, animeId]
     )) as [mysql.RowDataPacket[], mysql.FieldPacket[]];
 

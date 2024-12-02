@@ -24,7 +24,7 @@ export async function GET(request: Request) {
         WHERE userId = ?
         UNION
         SELECT genres
-        FROM watchLater
+        FROM watchlater
         WHERE userId = ?
       ) as userGenres
     `,
