@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['example.com'], // Adjust image domains as needed
+    domains: ['example.com'], 
   },
 };
 
