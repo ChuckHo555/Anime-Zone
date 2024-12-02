@@ -6,7 +6,6 @@ const VolumeControl: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [volume, setVolume] = useState(0.3);
   const [permissionRequested, setPermissionRequested] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +24,6 @@ const VolumeControl: React.FC = () => {
       audioRef.current
         .play()
         .then(() => {
-          setIsPlaying(true);
           setPermissionRequested(true);
         })
         .catch((error) => console.error("Audio play failed:", error));
@@ -34,7 +32,6 @@ const VolumeControl: React.FC = () => {
 
   const handleDeny = () => {
     setPermissionRequested(true);
-    setIsPlaying(false); 
     if (audioRef.current) {
       audioRef.current.pause(); 
       audioRef.current.currentTime = 0; 
