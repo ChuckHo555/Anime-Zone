@@ -1,12 +1,7 @@
 import RecommendationList from "@/app/components/(scripts)/ForYou";
 import DetailedAnimeModal from "@/app/components/(utility)/DetailedModal";
 import VerifyUser from "@/app/components/Auth/VerifyUser";
-import { Jaro } from "next/font/google";
 
-const jaro = Jaro({
-  subsets: ["latin"],
-  weight: "400",
-});
 
 export default async function RecommendationPage({
   searchParams,
@@ -18,7 +13,7 @@ export default async function RecommendationPage({
 
   return (
     <div className="recommendation-page-container bg-gray-900 text-white min-h-screen flex flex-col items-center py-8">
-      <h1 className={`text-4xl font-bold mb-6 ${jaro.className}`}>For You</h1>
+      <h1 className={`text-4xl font-bold mb-6`}>For You</h1>
       <VerifyUser />
       <RecommendationList />
 

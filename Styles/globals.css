@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Jaro';
+  src: url('/Jaro-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   margin:0;
   padding:0;
@@ -26,6 +33,7 @@ body {
   min-width:450px;
   height:100%;
   min-height:650px;
+  font-family: 'Jaro', sans-serif;
 }
 
 /* Welcome Page*/

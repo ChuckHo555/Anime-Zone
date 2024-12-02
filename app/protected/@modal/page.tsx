@@ -1,11 +1,14 @@
 import DetailedAnimeModal from "@/app/components/(utility)/DetailedModal";
 
 type AnimeModalPageProps = {
-  params: { animeId: string };
+  params: Promise<{ animeId: string }>;  
 };
 
-export default function AnimeModalPage({
+export default async function AnimeModalPage({
   params,
 }: AnimeModalPageProps) {
-  return <DetailedAnimeModal animeId={params.animeId} />;
+
+  const resolvedParams = await params;
+
+  return <DetailedAnimeModal animeId={resolvedParams.animeId} />;
 }

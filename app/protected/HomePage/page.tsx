@@ -2,14 +2,8 @@ import { AnimeCardProps } from "@/util/constants";
 import AnimeCarousel from "@/app/components/(scripts)/Carousel";
 import VerifyUser from "@/app/components/Auth/VerifyUser";
 import DetailedAnimeModal from "@/app/components/(utility)/DetailedModal";
-import { Jaro } from "next/font/google";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-const jaro = Jaro({
-  subsets: ["latin"],
-  weight: "400",
-});
 
 async function fetchPopularAnime() {
   const res = await fetch(`${baseUrl}/api/getAnime?type=popular`);
@@ -34,7 +28,7 @@ export default async function HomePage({
     <div className="home-container">
       <div className="user-header">
         <VerifyUser />
-        <p className={`font-bold text-3xl ${jaro.className}`}>
+        <p className={`font-bold text-3xl`}>
           {" "}
           Get Started with these popular animes!
         </p>
