@@ -5,7 +5,7 @@ import { Jaro } from "next/font/google";
 
 const jaro = Jaro({
   subsets: ["latin"],
-  weight: ["400", "400"],
+  weight: "400",
 });
 
 export default async function SearchPage({

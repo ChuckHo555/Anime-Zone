@@ -1,9 +1,11 @@
 import DetailedAnimeModal from "@/app/components/(utility)/DetailedModal";
 
+type AnimeModalPageProps = {
+  params: { animeId: string };
+};
+
 export default function AnimeModalPage({
   params,
-}: {
-  params: { animeId: string };
-}) {
+}: AnimeModalPageProps) {
   return <DetailedAnimeModal animeId={params.animeId} />;
 }

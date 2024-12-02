@@ -8,7 +8,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 const jaro = Jaro({
   subsets: ["latin"],
-  weight: ["400", "400"],
+  weight: "400",
 });
 
 async function fetchPopularAnime() {
