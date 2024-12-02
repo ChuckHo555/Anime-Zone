@@ -1,19 +1,29 @@
 import Link from 'next/link';
 import {routes} from '@/util/constants';
+import { Jaro } from 'next/font/google';
+
+// Declare the Jaro font as a variable so it can be applied globally
+const jaro = Jaro({
+  subsets: ['latin'],
+  weight: ['400', '400'], // Adjust weights as needed
+});
 
 export default function WelcomePage() {
 
 
   return (
-    <section className="welcome-container">
-      <div className="welcome-wrapper">
-        <p  className="text-7xl font-bold mb-4">Welcome to Anime Zone!</p>
-        <h1>Anime Zone is a application that blah blah blah blah blah....</h1>
-        <h3>Click the button below to get started!</h3>
-        <Link href={routes.auth.path}>
-        <button className="auth-button">Get Started</button>
+    <div className="welcome-container ">
+       <div className={`title-container ${jaro.className}`}>
+        <h1 className="title">Anime Zone</h1>
+        </div>
+        <p className={`text-4xl font-bold ${jaro.className}`} >Tech Nerds Save the World</p>
+        <p className="subtext">
+          Discover, track, and save your favorite anime with ease
+        </p>
+        <Link href={routes.auth.path} className="btn-container">
+        <button className="btn">Get Started</button>
         </Link>
-      </div>
-    </section>
+      
+    </div>
   );
 }

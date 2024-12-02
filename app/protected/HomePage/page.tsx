@@ -1,10 +1,18 @@
 import { AnimeCardProps } from "@/util/constants";
-import AnimeCarousel from "@/app/components/Carousel";
+import AnimeCarousel from "@/app/components/(scripts)/Carousel";
 import VerifyUser from "@/app/components/Auth/VerifyUser";
-import DetailedAnimeModal from "@/app/components/DetailedModal";
+import DetailedAnimeModal from "@/app/components/(utility)/DetailedModal";
+import { Jaro } from "next/font/google";
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
+const jaro = Jaro({
+  subsets: ["latin"],
+  weight: ["400", "400"],
+});
 
 async function fetchPopularAnime() {
-  const res = await fetch("http://localhost:3000/api/getAnime?type=popular");
+  const res = await fetch(`${baseUrl}/api/getAnime?type=popular`);
 
   if (!res.ok) {
     throw new Error("Failed to fetch popular anime");
@@ -23,11 +31,14 @@ export default async function HomePage({
 
   const animeId = resolvedSearchParams.modal;
   return (
-    <div className="home-container relative">
+    <div className="home-container">
       <div className="user-header">
         <VerifyUser />
+        <p className={`font-bold text-3xl ${jaro.className}`}>
+          {" "}
           Get Started with these popular animes!
-        </div>
+        </p>
+      </div>
 
       {/* Carousel Section */}
       <div className="home-wrapper overflow-hidden">

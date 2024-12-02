@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "@/Styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import BackgroundVideo from "@/app/components/Background";
+import BackgroundVideo from "@/app/components/(utility)/Background";
+import VolumeControl from "./components/(utility)/BGMusic";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +31,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} h-full`}
       >
-        <ClerkProvider>
+        <ClerkProvider dynamic>
+          <VolumeControl/>
           <BackgroundVideo />
         {children}
         </ClerkProvider>

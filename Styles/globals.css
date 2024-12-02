@@ -26,43 +26,44 @@ body {
   min-width:450px;
   height:100%;
   min-height:650px;
-  overflow: hidden; /* Prevents scrolling and keeps video fixed */
 }
 
 /* Welcome Page*/
 @layer components {
   
-  .welcome-container{
-    @apply border-red-500 border-[24px] border-solid /* border settings */
-
-    flex justify-center items-center /* flex settings */
-
-    w-full h-full /* size settings */
-
-    /* additional settings */
-    text-white text-2xl
+  .welcome-container {
+    @apply flex flex-col justify-center items-center w-full h-full text-white text-2xl p-4 gap-5
   }
-  .welcome-wrapper{
-    @apply border-blue-500 border-[12px] border-solid
-    flex flex-col justify-start items-center 
-    p-2 gap-2
-    w-full h-[500px];
 
-    /* Regular CSS */
-    box-shadow: 0px 4px 40px 0px #FF7622;
-
+  .title-container {
+    @apply bg-gradient-to-r from-gray-800 via-black to-gray-900
+     text-white text-center p-6 rounded-full shadow-lg
+     border-solid border-red-500 border-[5px]
+    max-w-[600px]
+    w-full;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), -1px -1px 4px rgba(0, 0, 0, 0.7);
   }
-  .content-wrapper{
-    @apply border-orange-500
-    flex justify-center items-center
-    gap-5
-    w-full h-fit
-    max-h-[500px]
-  }
-  .auth-button{
-    @apply bg-blue-500 hover:bg-blue-600 rounded-md
-    px-6 py-2 text-white
+  
 
+  .title {
+    @apply text-8xl font-bold leading-tight mb-4;
+  }
+
+  .subtext {
+    @apply text-lg font-normal mb-6 text-opacity-80;
+    line-height: 1.5;
+  }
+
+  .btn-container {
+    @apply flex justify-center gap-4;
+  }
+
+  .btn {
+    @apply bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full transition transform duration-200;
+  }
+
+  .btn:hover {
+    @apply scale-105;
   }
   
 }
@@ -100,44 +101,50 @@ body {
 
 /*Authentication Pages*/
 @layer components{
-  .auth-container{
-    @apply border-red-500 border-[24px] border-solid /* border settings */
-
-    flex justify-center items-center /* flex settings */
-
-    w-full h-full /* size settings */
-
-    /* additional settings */
-    text-white text-2xl
+  .auth-container {
+    @apply flex justify-center items-center w-full h-full text-white text-2xl p-4 gap-5;
   }
-  .auth-wrapper{
-    @apply border-blue-500 border-[12px] border-solid
-    flex flex-col justify-start items-center 
-    p-2 gap-4
-    w-full h-[500px]
+  
+  .auth-wrapper {
+    @apply bg-gradient-to-r from-gray-800 via-black to-gray-900
+      text-white text-center p-6 rounded-full shadow-lg
+      max-w-[600px] w-full;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7), -1px -1px 4px rgba(0, 0, 0, 0.7);
+  }
+  
+  .auth-buttons {
+    @apply flex justify-center gap-4 mt-8;
+  }
+  
+  .auth-buttons button {
+    @apply bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded-full transition transform duration-200;
+  }
+  
+  .auth-buttons button:hover {
+    @apply scale-105;
   }
 }
 
 /*Home Pages*/
 @layer components{
   .home-container{
-    @apply border-red-500 border-[12px] border-solid /* border settings */
+    @apply
     flex flex-col justify-start items-center
-    w-full h-full
+    w-full h-screen
    text-white text-2xl
     bg-black overflow-hidden
 
   }
   .home-wrapper{
-    @apply border-blue-500 border-[12px] border-solid
+    @apply border-solid border-black border-[10px]
     flex justify-start items-start
     p-3 gap-4
     w-full h-full
     overflow-y-scroll
   }
   .user-header{
-    @apply border-orange-500 border-[12px] border-solid
-    flex justify-start items-center
+    @apply border-solid
+    flex justify-center items-center
     p-3 
     w-full h-fit max-h-[200px]
     bg-red-600
@@ -169,8 +176,7 @@ body {
 
 /*Background*/
 @layer components{
-  /* Container styling for the video */
-/* Background Video Styles */
+
 .background-video-container {
   position: fixed;
   top: 0;
@@ -190,7 +196,8 @@ body {
   min-width: 100%;
   min-height: 100%;
   transform: translate(-50%, -50%);
-  object-fit: cover; /* Ensures it fills the screen properly */
+  object-fit: cover; 
+  filter: brightness(0.8); 
 }
 
 /* Content Overlay Styling */
