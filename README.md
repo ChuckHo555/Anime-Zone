@@ -21,7 +21,7 @@ https://anime-zone-aet.vercel.app/
 
 # Pictures 
 Welcome Page
-(![Welcome Screen](https://github.com/user-attachments/assets/3555aec4-4286-468e-8991-4b69944b9500)
+![Welcome Screen](https://github.com/user-attachments/assets/3555aec4-4286-468e-8991-4b69944b9500)
 
 Home Page
 ![Home Page](https://github.com/user-attachments/assets/09e4ffd6-dc64-4975-a629-b213592f56c9)
