@@ -41,6 +41,9 @@ Your Lists Page
 Profile Page
 ![Profile Page](https://github.com/user-attachments/assets/03b02172-44ae-4c30-8273-6bec6d0b0186)
 
+# Demo Video
+https://github.com/user-attachments/assets/47ccdf86-a2b8-4a4c-a8b6-c4109f0eae74
+
 # Assets Used
 [Anime Background](https://pixabay.com/videos/train-ride-girl-sunset-anime-90408/)
 
